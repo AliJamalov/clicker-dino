@@ -41,12 +41,12 @@ function App() {
     setIsScaled(true);
     setScore(score + 1);
 
-    if (score === 3) {
+    if (score === 30) {
       setEgg2(false);
       setEgg3(true);
     }
 
-    if (score === 6) {
+    if (score === 60) {
       if (finishClick.current) {
         finishClick.current.play(); 
       };
