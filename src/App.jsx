@@ -2,9 +2,8 @@ import { motion } from 'framer-motion';
 import { useState, useRef } from 'react';
 
 function App() {
-
   const dataDino = [
-    { dino: "/dino.jpg" },
+    { dino: "/t-rex.jpg" },
     { dino: "/orange-dino.jpg" },
     { dino: "/triceratops.png" },
     { dino: "/velociraptor.jpg" },
@@ -12,7 +11,7 @@ function App() {
     { dino: "/iguanodon.avif" },
     { dino: "/stegozavr.avif" },
     { dino: "/ankilozavr.jpg" },
-  ]
+  ];
 
   const audioClick = useRef();
   const finishClick = useRef();
@@ -25,41 +24,53 @@ function App() {
   const [winText, setWinText] = useState(false);
   const [currentDino, setCurrentDino] = useState(dataDino[0].dino);
   const [message, setMessage] = useState('');
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const getRandomDino = () => {
     const randomIndex = Math.floor(Math.random() * dataDino.length);
     const result = dataDino[randomIndex].dino;
     setCurrentDino(result);
     setMessage(`You got a ${result.split('/').pop().split('.')[0]}!`);
-  }
+  };
 
   const handleClick = () => {
     if (audioClick.current) {
-      audioClick.current.play(); // Воспроизводим звук при клике
+      audioClick.current.play(); 
     };
-    
+
     setIsScaled(true);
     setScore(score + 1);
 
-    if (score === 9) {
+    if (score === 30) {
       setEgg2(false);
       setEgg3(true);
     }
 
-    if (score === 19) {
+    if (score === 60) {
       if (finishClick.current) {
-        finishClick.current.play(); // Воспроизводим звук при клике
+        finishClick.current.play(); // Воспроизводим звук при достижении конца
       };
 
-      getRandomDino()
+      getRandomDino();
       setDino(true);
       setEgg3(false);
       setWinText(true);
+      setIsGameOver(true); // Устанавливаем флаг завершения игры
     }
 
     setTimeout(() => {
       setIsScaled(false);
-    }, 100); 
+    }, 100);
+  };
+
+  const restartGame = () => {
+    setScore(0);
+    setEgg2(true);
+    setEgg3(false);
+    setDino(false);
+    setWinText(false);
+    setIsGameOver(false);
+    getRandomDino(); // Обновляем динозавра при перезапуске
   };
 
   return (
@@ -99,10 +110,18 @@ function App() {
             className="max-w-[180px] min-h-[100px] mt-[20px] z-40"
           />
         )}
-      {winText && <h1 className='mt-[20px] text-[32px] font-bold text-green-900'>{message}</h1>}
+        {winText && <h1 className='mt-[20px] text-[32px] font-bold text-green-900'>{message}</h1>}
+        {isGameOver && (
+          <button
+            onClick={restartGame}
+            className='mt-[20px] px-4 py-2 bg-blue-500 text-white font-bold rounded'
+          >
+            Restart Game
+          </button>
+        )}
       </div>
     </div>
   );
 }
 
-export default App
+export default App;
