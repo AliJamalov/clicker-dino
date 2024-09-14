@@ -1,28 +1,57 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 function App() {
+
+  const dataDino = [
+    { dino: "/dino.jpg" },
+    { dino: "/orange-dino.jpg" },
+    { dino: "/triceratops.png" },
+    { dino: "/velociraptor.jpg" },
+    { dino: "/pterodaktil.png" },
+    { dino: "/iguanodon.avif" },
+    { dino: "/stegozavr.avif" },
+    { dino: "/ankilozavr.jpg" },
+  ]
+
+  const audioClick = useRef();
+  const finishClick = useRef();
+
   const [isScaled, setIsScaled] = useState(false);
   const [dino, setDino] = useState(false);
   const [score, setScore] = useState(0);
   const [egg2, setEgg2] = useState(true);
   const [egg3, setEgg3] = useState(false);
   const [winText, setWinText] = useState(false);
+  const [currentDino, setCurrentDino] = useState(dataDino[0].dino);
+  const [message, setMessage] = useState('');
+
+  const getRandomDino = () => {
+    const randomIndex = Math.floor(Math.random() * dataDino.length);
+    const result = dataDino[randomIndex].dino;
+    setCurrentDino(result);
+    setMessage(`You got a ${result.split('/').pop().split('.')[0]}!`);
+  }
 
   const handleClick = () => {
+    if (audioClick.current) {
+      audioClick.current.play(); // Воспроизводим звук при клике
+    };
+    
     setIsScaled(true);
     setScore(score + 1);
 
     if (score === 9) {
-      setEgg2(true);
-    }
-
-    if (score === 19) {
       setEgg2(false);
       setEgg3(true);
     }
 
-    if (score === 29) {
+    if (score === 19) {
+      if (finishClick.current) {
+        finishClick.current.play(); // Воспроизводим звук при клике
+      };
+
+      getRandomDino()
       setDino(true);
       setEgg3(false);
       setWinText(true);
@@ -36,10 +65,12 @@ function App() {
   return (
     <div className="relative flex justify-center">
       <div className="mt-[160px] flex flex-col items-center cursor-pointer">
+        <audio ref={audioClick} src='/music/click.mp3' preload="auto"></audio>
+        <audio ref={finishClick} src='/music/finish.mp3' preload="auto"></audio>
         {egg2 && (
           <motion.img
             onClick={handleClick}
-            src='/egg2.jpg'
+            src='/egg-noSmash.jpg'
             alt="egg2"
             initial={{ scale: 1 }}
             animate={{ scale: isScaled ? [1, 1.1, 1] : 1 }}
@@ -50,7 +81,7 @@ function App() {
         {egg3 && (
           <motion.img
             onClick={handleClick}
-            src='/lastEgg.jpg'
+            src='/egg-smah (1).jpg'
             alt="egg3"
             initial={{ scale: 1 }}
             animate={{ scale: isScaled ? [1, 1.1, 1] : 1 }}
@@ -60,16 +91,15 @@ function App() {
         )}
         {dino && (
           <motion.img
-            src="/dino.jpg"
+            src={currentDino}
             alt="dino"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="w-[70px] mt-[20px] z-40"
+            className="max-w-[180px] min-h-[100px] mt-[20px] z-40"
           />
         )}
-      <p className='text-[24px] font-normal mt-[30px]'>{score}</p>
-      {winText && <h1 className='mt-[20px] text-[32px] font-bold text-green-900'>You got t-rex!</h1>}
+      {winText && <h1 className='mt-[20px] text-[32px] font-bold text-green-900'>{message}</h1>}
       </div>
     </div>
   );
