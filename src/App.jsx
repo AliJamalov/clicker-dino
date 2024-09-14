@@ -41,12 +41,12 @@ function App() {
     setIsScaled(true);
     setScore(score + 1);
 
-    if (score === 30) {
+    if (score === 3) {
       setEgg2(false);
       setEgg3(true);
     }
 
-    if (score === 60) {
+    if (score === 6) {
       if (finishClick.current) {
         finishClick.current.play(); 
       };
@@ -54,11 +54,14 @@ function App() {
       getRandomDino();
       setDino(true);
       setEgg3(false);
-      setWinText(true);
 
       setTimeout(() => {
         setIsGameOver(true); 
       }, 2000);
+
+      setTimeout(() => {
+        setWinText(true);
+      }, 500);
     }
 
     setTimeout(() => {
@@ -113,7 +116,11 @@ function App() {
             className="max-w-[180px] min-h-[100px] mt-[20px] z-40"
           />
         )}
-        {winText && <h1 className='mt-[20px] text-[32px] font-bold text-green-900'>{message}</h1>}
+        {winText && <motion.h1
+             initial={{ opacity: 0, scale: 0.5 }}
+             animate={{ opacity: 1, scale: 1 }}
+             transition={{ duration: 0.5, ease: 'easeOut' }} 
+             className='mt-[20px] text-[32px] font-bold text-green-900'>{message}</motion.h1>}
         {isGameOver && (
           <motion.button
             onClick={restartGame}
@@ -121,7 +128,7 @@ function App() {
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            >Start</motion.button>
+            >Again</motion.button>
         )}
       </div>
     </div>
