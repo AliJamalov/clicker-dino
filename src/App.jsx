@@ -48,14 +48,17 @@ function App() {
 
     if (score === 60) {
       if (finishClick.current) {
-        finishClick.current.play(); // Воспроизводим звук при достижении конца
+        finishClick.current.play(); 
       };
 
       getRandomDino();
       setDino(true);
       setEgg3(false);
       setWinText(true);
-      setIsGameOver(true); // Устанавливаем флаг завершения игры
+
+      setTimeout(() => {
+        setIsGameOver(true); 
+      }, 2000);
     }
 
     setTimeout(() => {
@@ -70,12 +73,12 @@ function App() {
     setDino(false);
     setWinText(false);
     setIsGameOver(false);
-    getRandomDino(); // Обновляем динозавра при перезапуске
+    getRandomDino(); 
   };
 
   return (
     <div className="relative flex justify-center">
-      <div className="mt-[160px] flex flex-col items-center cursor-pointer">
+      <div className="mt-[140px] flex flex-col items-center cursor-pointer">
         <audio ref={audioClick} src='/music/click.mp3' preload="auto"></audio>
         <audio ref={finishClick} src='/music/finish.mp3' preload="auto"></audio>
         {egg2 && (
@@ -112,12 +115,13 @@ function App() {
         )}
         {winText && <h1 className='mt-[20px] text-[32px] font-bold text-green-900'>{message}</h1>}
         {isGameOver && (
-          <button
+          <motion.button
             onClick={restartGame}
             className='mt-[20px] px-4 py-2 bg-blue-500 text-white font-bold rounded'
-          >
-            Restart Game
-          </button>
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            >Start</motion.button>
         )}
       </div>
     </div>
